@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mensaje con movimiento</title>
+    <style>
+        #mensaje {
+            position: absolute;
+            left: -300px; /* Iniciamos el mensaje fuera de la pantalla a la izquierda */
+            transition: left 2s ease-in-out; /* Animación de transición suave */
+        }
+    </style>
+</head>
+<body>
+    <p id="mensaje">Esto está hecho con JavaScript</p>
+
+    <script>
+        // Selecciona el elemento con el id "mensaje"
+        const mensaje = document.getElementById('mensaje');
+
+        // Función para iniciar la animación
+        function iniciarAnimacion() {
+            mensaje.style.left = "0px";
+        }
+
+        // Llamamos a la función después de un pequeño retraso para que se vea más natural
+        setTimeout(iniciarAnimacion, 100);
+    </script>
+</body>
+</html>
