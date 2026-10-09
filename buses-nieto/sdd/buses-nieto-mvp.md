@@ -109,7 +109,7 @@ Reliability).
 | T8 | S1, S4, S5, S6, S8 | inline | done | bccc3d1 | medium |
 | T9 | S7, S9 | inline | done | d016b64 | high (4R) |
 | T10 | S11 | revisor independiente (4R) sobre `4d125e4..d016b64` | done (approved) | bed5319 | high (4R) |
-| T11 | S9 | inline: repo dev + Pages (free tier) | in-progress | — | high (4R) |
+| T11 | S9 | inline: repo dev + Pages (free tier) | done (approved) | 11cf501, b31b6f1 | high (4R) |
 
 - T1 Scaffold: `package.json`, servidor estático sin dependencias, `rdd-assess`, lint.
 - T2 Fotos: recortes WebP del flyer en `site/img/units/scania-metalsur-2014/`.
@@ -157,4 +157,10 @@ Reliability).
   siempre y cuando sea free tier". Pages gratis requiere repo público (en el plan Free no
   hay Pages para repos privados); Actions es gratis en repos públicos. La integración de
   GitHub no puede crear repos (403), así que el usuario crea el repo vacío y activa Pages.
+- **L10** T11: espejo público `arivillani/buses-nieto-dev` creado por el usuario (la integración
+  no puede crear repos) con Pages en "GitHub Actions". Primer deploy: gates en verde, deploy
+  falló porque Pages aún no estaba habilitado y pasó al relanzarlo (run 37873462029). URL:
+  https://arivillani.github.io/buses-nieto-dev/ (el proxy del entorno bloquea `github.io`, así
+  que la verificación es por la API de Actions). Revisión 4R de `11cf501`: 1 major y 3 minor,
+  corregidos en `b31b6f1` y aprobados. Recibo: `rdd/receipts/2026-10-09-dev-pages.md`.
 
