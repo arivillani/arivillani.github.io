@@ -7,6 +7,7 @@
   --accent-300: #7be38f;
   --accent-400: #3ccf62;
   --accent-500: #22b14c;
+  --accent-700: #15803d;
   --orange-500: #e4572e;
   --orange-600: #c8401a;
   --ink: #0d1f17;
@@ -558,7 +559,7 @@ p {
 }
 
 .section__title span {
-  color: var(--accent-500);
+  color: var(--accent-700);
 }
 
 .section--dark .section__title span {
@@ -655,8 +656,8 @@ p {
   display: inline-block;
   margin-top: 12px;
   padding: 6px 18px;
-  background: var(--accent-500);
-  color: var(--white);
+  background: var(--accent-400);
+  color: var(--green-950);
   font-family: var(--display);
   font-size: 1.6rem;
   font-style: italic;
