@@ -263,7 +263,8 @@
             <li><p><strong>Te contactamos.</strong> Coordinamos fotos, tasación y la mejor forma de venta.</p></li>
           </ol>
         </div>
-        <form class="form-card" id="sell-form" novalidate aria-labelledby="vender-title">
+        <noscript><p class="empty-state">Escribinos por WhatsApp al <a href="https://wa.me/5493549442500?text=Hola%20Buses%20Nieto%2C%20quiero%20vender%20mi%20unidad." target="_blank" rel="noopener noreferrer">3549 442500</a> con marca, modelo, año y asientos de tu unidad.</p></noscript>
+        <form class="form-card js-only" id="sell-form" novalidate aria-labelledby="vender-title">
           <div class="field">
             <label for="sell-nombre">Nombre</label>
             <input id="sell-nombre" name="nombre" type="text" autocomplete="name" maxlength="60" required aria-describedby="sell-nombre-error">
@@ -307,7 +308,8 @@
           <h2 class="section__title" id="vendidas-title">Unidades <span>vendidas</span></h2>
           <p>Algunas de las unidades que ya están trabajando con sus nuevos dueños.</p>
         </div>
-        <ul class="unit-grid" id="sold-grid"></ul>
+        <ul class="unit-grid js-only" id="sold-grid"></ul>
+        <noscript><p class="empty-state">Para ver las unidades vendidas activá JavaScript.</p></noscript>
       </div>
     </section>
 

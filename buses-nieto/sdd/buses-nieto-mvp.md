@@ -42,7 +42,8 @@ WhatsApp: "3549 442500" y "11 2511 3132".
 ### S4 — Catálogo con filtros
 Filtrar por tipo, marca, año mínimo, precio máximo (USD) y texto libre; ordenar por
 "Destacadas" (por defecto), "Más recientes", "Menor precio", "Mayor precio"; las unidades sin
-precio publicado ("Consultar") van al final. Contador "N unidades". Estado vacío:
+precio publicado ("Consultar") van al final. El catálogo lista las unidades en venta
+(disponibles y reservadas, estas con su etiqueta); las vendidas van a su sección. Contador "N unidades". Estado vacío:
 "No encontramos unidades con esos filtros". El buscador del hero aplica sus filtros al catálogo.
 - **Aceptación:** tests unitarios de `filterUnits`/`sortUnits`; e2e que filtra y ve el conteo.
 

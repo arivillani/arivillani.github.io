@@ -20,7 +20,7 @@ npm run dev          # http://127.0.0.1:4173 (mismos headers de seguridad que en
 | --- | --- |
 | `npm run lint` | ESLint (con reglas que prohíben sinks de HTML) + html-validate (a11y) |
 | `npm test` | Tests unitarios + gate de seguridad estático (`node --test`) |
-| `npm run test:coverage` | Unitarios con piso de 90 % de líneas |
+| `npm run test:coverage` | Unitarios con piso de 90 % de líneas sobre los módulos que cargan (lógica pura y tooling; la UI la cubre e2e) |
 | `npm run test:security` | Solo el gate de seguridad estático |
 | `npm run test:e2e` | Playwright + axe en desktop y mobile (360 px) |
 | `npm run audit` | `npm audit --audit-level=high` |

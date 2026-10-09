@@ -41,6 +41,13 @@ test('parseUnits keeps valid units and counts the rejected ones', () => {
   assert.deepEqual(parseUnits({ not: 'an array' }, opts), { units: [], rejected: 0 });
 });
 
+test('parseUnits drops repeated ids so a card never opens another unit', () => {
+  const { units, rejected } = parseUnits([scania, unit({ seats: 50 })], opts);
+  assert.equal(units.length, 1);
+  assert.equal(units[0].seats, 43);
+  assert.equal(rejected, 1);
+});
+
 const catalog = [
   unit(),
   unit({ id: 'mb-saldivia-2010', type: 'minibus', brand: 'Mercedes-Benz', body: 'Saldivia', year: 2010, seats: 24, fuel: 'Diésel', price: { currency: 'USD', amount: 32000 }, featured: false }),
@@ -48,8 +55,10 @@ const catalog = [
   unit({ id: 'volvo-2008', brand: 'Volvo', body: 'Marcopolo', year: 2008, price: { currency: 'USD', amount: 55000 }, status: 'vendida', featured: false }),
 ];
 
-test('filterUnits shows available units by default and filters by type', () => {
+test('filterUnits shows units for sale (available or reserved) by default and filters by type', () => {
   assert.deepEqual(filterUnits(catalog, {}).map((u) => u.id), ['scania-metalsur-2014', 'mb-saldivia-2010', 'sprinter-2019']);
+  const reserved = unit({ id: 'reservada-1', status: 'reservada' });
+  assert.deepEqual(filterUnits([reserved], {}).map((u) => u.id), ['reservada-1']);
   assert.deepEqual(filterUnits(catalog, { type: 'minibus' }).map((u) => u.id), ['mb-saldivia-2010']);
   assert.deepEqual(filterUnits(catalog, { status: 'vendida' }).map((u) => u.id), ['volvo-2008']);
 });
@@ -64,6 +73,11 @@ test('filterUnits text search ignores case and accents', () => {
   assert.deepEqual(filterUnits(catalog, { q: 'METALSUR' }).map((u) => u.id), ['scania-metalsur-2014']);
   assert.equal(filterUnits(catalog, { q: 'diesel' }).length, 3);
   assert.deepEqual(filterUnits(catalog, { q: 'cama suite scania' }).map((u) => u.id), ['scania-metalsur-2014']);
+});
+
+test('sortUnits puts featured units first by default, then the most recent', () => {
+  assert.deepEqual(sortUnits(catalog).map((u) => u.id), ['scania-metalsur-2014', 'sprinter-2019', 'mb-saldivia-2010', 'volvo-2008']);
+  assert.deepEqual(sortUnits(catalog, 'featured'), sortUnits(catalog));
 });
 
 test('sortUnits orders by year or price, leaves unpriced units last and does not mutate', () => {

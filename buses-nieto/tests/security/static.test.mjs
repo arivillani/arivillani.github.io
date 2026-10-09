@@ -104,10 +104,22 @@ for (const { file, css } of styles) {
   });
 }
 
+for (const file of filesUnder(SITE, '.svg')) {
+  test(`${path.relative(SITE, file)}: is inert markup with no script, handlers or external references`, () => {
+    const svg = readFileSync(file, 'utf8');
+    assert.doesNotMatch(svg, /<script|<foreignObject|\son[a-z]+\s*=|javascript:/i);
+    for (const ref of svg.matchAll(/(?:xlink:)?href\s*=\s*["']([^"']*)["']/g)) {
+      assert.match(ref[1], /^#/, `referencia externa: ${ref[1]}`);
+    }
+  });
+}
+
 test('data/units.json passes the schema and every photo exists', () => {
   const data = JSON.parse(readFileSync(path.join(SITE, 'data', 'units.json'), 'utf8'));
+  assert.ok(Array.isArray(data), 'units.json debe ser una lista');
   const { units, rejected } = parseUnits(data);
   assert.equal(rejected, 0);
+  assert.equal(new Set(units.map((u) => u.id)).size, units.length, 'ids repetidos');
   for (const unit of units) {
     for (const image of unit.images) assert.ok(existsSync(path.join(SITE, image)), `falta ${image}`);
   }

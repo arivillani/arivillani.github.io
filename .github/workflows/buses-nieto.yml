@@ -2,7 +2,8 @@
 # Gates de calidad y seguridad en cada push a ramas de feature y en PRs; si todo pasa,
 # deploy-dev publica el paquete del sitio en el environment "dev".
 # Ningún job despliega desde main: producción (raíz de arivillani.github.io) no se toca.
-# Las actions están fijadas por SHA de commit; Dependabot las mantiene al día.
+# Las actions están fijadas por SHA de commit. Dependabot solo lee su config desde la rama por
+# defecto: hasta que esto se integre a main, los pins se revisan a mano en cada cambio.
 name: buses-nieto
 
 on:
@@ -70,7 +71,7 @@ jobs:
           cache-dependency-path: buses-nieto/package-lock.json
       - run: npm ci --ignore-scripts
       - run: npm run lint
-      - name: Tests unitarios con cobertura mínima de 90 %
+      - name: Tests unitarios con cobertura ≥ 90 % de los módulos que cargan (la UI la cubre e2e)
         run: npm run test:coverage
       - name: Gate de seguridad estático
         run: npm run test:security

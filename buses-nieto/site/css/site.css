@@ -119,7 +119,8 @@ p {
   top: 12px;
 }
 
-.no-js .js-only {
+.no-js .js-only,
+[hidden] {
   display: none !important;
 }
 

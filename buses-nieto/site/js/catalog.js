@@ -66,9 +66,16 @@ export function validateUnit(raw, { currentYear = new Date().getFullYear() } = {
   return unit;
 }
 
+/** Valid units in file order; invalid entries and repeated ids are dropped and counted. */
 export function parseUnits(data, options) {
   if (!Array.isArray(data)) return { units: [], rejected: 0 };
-  const units = data.map((raw) => validateUnit(raw, options)).filter(Boolean);
+  const seen = new Set();
+  const units = [];
+  for (const unit of data.map((raw) => validateUnit(raw, options))) {
+    if (!unit || seen.has(unit.id)) continue;
+    seen.add(unit.id);
+    units.push(unit);
+  }
   return { units, rejected: data.length - units.length };
 }
 
@@ -80,10 +87,11 @@ function haystack(unit) {
   return normalize([unitTitle(unit), UNIT_TYPES[unit.type], unit.year, unit.fuel, unit.seatType, ...unit.features].filter(Boolean).join(' '));
 }
 
-export function filterUnits(units, { type, brand, minYear, maxPriceUsd, q, status = 'disponible' } = {}) {
+/** status "en-venta" (default) lists available and reserved units; any other value matches exactly. */
+export function filterUnits(units, { type, brand, minYear, maxPriceUsd, q, status = 'en-venta' } = {}) {
   const words = isSet(q) ? normalize(q).split(/\s+/).filter(Boolean) : [];
   return units.filter((unit) => {
-    if (unit.status !== status) return false;
+    if (status === 'en-venta' ? unit.status === 'vendida' : unit.status !== status) return false;
     if (isSet(type) && unit.type !== type) return false;
     if (isSet(brand) && normalize(unit.brand) !== normalize(brand)) return false;
     if (Number.isFinite(minYear) && unit.year < minYear) return false;

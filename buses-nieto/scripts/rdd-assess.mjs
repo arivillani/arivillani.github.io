@@ -11,8 +11,10 @@ const RULES = [
   { tier: 'high', why: 'workflow / supply chain', test: (f) => f.startsWith('.github/') || /(^|\/)package(-lock)?\.json$/.test(f) },
   { tier: 'high', why: 'site code handles data and builds external URLs', test: (f) => /\/site\/js\//.test(f) },
   { tier: 'high', why: 'tooling that executes locally or in CI', test: (f) => /\/scripts\/.+\.mjs$/.test(f) },
+  { tier: 'high', why: 'security gate or lint rules', test: (f) => /\/tests\/security\//.test(f) || /(^|\/)(eslint\.config\.js|\.htmlvalidate\.json)$/.test(f) },
+  { tier: 'high', why: 'SVG is active markup when opened directly', test: (f) => f.endsWith('.svg') },
   { tier: 'passive', why: 'documentation, specs or receipts', test: (f) => /\.md$/.test(f) || /\/(sdd|rdd)\//.test(f) },
-  { tier: 'passive', why: 'binary asset', test: (f) => /\.(webp|png|jpe?g|svg|ico|woff2|txt)$/.test(f) },
+  { tier: 'passive', why: 'binary asset', test: (f) => /\.(webp|png|jpe?g|ico|woff2|txt)$/.test(f) },
   { tier: 'medium', why: 'markup, styles, data, tests or config', test: () => true },
 ];
 

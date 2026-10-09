@@ -57,6 +57,12 @@ test.describe('without JavaScript', () => {
     }
     await expect(featured.getByRole('link', { name: /Consultar por WhatsApp/ })).toHaveAttribute('href', SCANIA_WA);
   });
+
+  test('S6: the sell form is replaced by a direct WhatsApp link', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('#sell-form')).toBeHidden();
+    await expect(page.locator('#vender').getByRole('link', { name: /3549 442500/ })).toBeVisible();
+  });
 });
 
 test('S3/S5: the flyer unit is in the catalog with its price and WhatsApp enquiry', async ({ page }) => {
@@ -139,7 +145,7 @@ test('S8: no serious or critical accessibility violations, page and dialog', asy
 test('S8: no horizontal scroll and a working menu on small screens', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'solo mobile');
   await openHome(page);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBe(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(0);
   const toggle = page.getByRole('button', { name: 'Menú' });
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-expanded', 'true');
@@ -159,6 +165,20 @@ test('S7: a broken catalog file degrades gracefully', async ({ page }, testInfo)
   await page.goto('/');
   await expect(page.locator('#results-count')).toContainText('No pudimos cargar el catálogo');
   await expect(page.locator('#destacada')).toContainText('U$S 90.000');
+  await page.click('#hero-search button[type="submit"]');
+  await expect(page.locator('#results-count')).toContainText('No pudimos cargar el catálogo');
+  await expect(page.locator('#filters')).toBeHidden();
+  await expect(page.locator('#destacada [data-open-unit]')).toBeHidden();
+});
+
+test('S7: an apostrophe in unit data does not take the catalog down', async ({ page }) => {
+  await page.route('**/data/units.json', async (route) => {
+    const units = await (await route.fetch()).json();
+    units[1].model = "O'500 RS";
+    await route.fulfill({ json: units });
+  });
+  await openHome(page);
+  await expect(page.locator('#unit-grid .unit-card')).toHaveCount(5);
 });
 
 test('S1: the terms page loads with its own heading', async ({ page }) => {

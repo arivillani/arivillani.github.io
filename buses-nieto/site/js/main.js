@@ -8,7 +8,7 @@ import { el } from './dom.js';
 document.documentElement.classList.replace('no-js', 'js');
 
 const $ = (selector) => document.querySelector(selector);
-const state = { units: [], openUnit: null, opener: null };
+const state = { units: [], loadError: false, openUnit: null, opener: null };
 
 const filtersForm = $('#filters');
 const dialog = $('#unit-dialog');
@@ -26,16 +26,29 @@ function readFilters() {
   };
 }
 
+// One unit that cannot be rendered is logged and skipped instead of emptying the catalog.
+function renderCards(units) {
+  return units.flatMap((unit) => {
+    try {
+      return [renderUnitCard(unit)];
+    } catch (error) {
+      console.error(`No se pudo mostrar la unidad ${unit.id}:`, error);
+      return [];
+    }
+  });
+}
+
 function renderCatalog() {
+  if (state.loadError) return;
   const units = sortUnits(filterUnits(state.units, readFilters()), filtersForm.elements.sort.value);
-  $('#unit-grid').replaceChildren(...units.map(renderUnitCard));
+  $('#unit-grid').replaceChildren(...renderCards(units));
   $('#results-count').textContent = units.length === 1 ? '1 unidad' : `${units.length} unidades`;
   $('#empty-state').hidden = units.length > 0;
 }
 
 function renderSold() {
   const sold = sortUnits(filterUnits(state.units, { status: 'vendida' }), 'recent');
-  $('#sold-grid').replaceChildren(...sold.map(renderUnitCard));
+  $('#sold-grid').replaceChildren(...renderCards(sold));
 }
 
 function renderCategoryCounts() {
@@ -70,7 +83,9 @@ function openUnit(id, opener) {
 async function loadUnits() {
   const response = await fetch('data/units.json', { credentials: 'same-origin' });
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  const { units, rejected } = parseUnits(await response.json());
+  const data = await response.json();
+  if (!Array.isArray(data)) throw new Error('data/units.json no es una lista de unidades.');
+  const { units, rejected } = parseUnits(data);
   if (rejected) console.warn(`${rejected} unidad(es) descartadas por no cumplir el esquema.`);
   return units;
 }
@@ -159,5 +174,7 @@ try {
   renderSold();
 } catch (error) {
   console.error(error);
+  state.loadError = true;
   $('#results-count').textContent = 'No pudimos cargar el catálogo. Escribinos por WhatsApp y te enviamos el listado.';
+  for (const control of [filtersForm, $('#clear-filters'), ...document.querySelectorAll('[data-open-unit]')]) control.hidden = true;
 }

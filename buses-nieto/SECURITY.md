@@ -28,7 +28,7 @@ corregir el problema antes de divulgarlo.
 | Servidor de desarrollo con protección contra path traversal y headers de seguridad | `scripts/serve.mjs` | Lectura de archivos fuera de `site/` y diferencias entre dev y producción |
 | Tests de seguridad estáticos | `tests/security/` | Regresiones en CSP, scripts y estilos inline, sinks peligrosos y `rel` de links externos |
 | CI: escaneo de secretos (gitleaks), SAST (CodeQL), `npm audit --audit-level=high`, dependency review en PR, actions fijadas por SHA, `permissions: contents: read`, `npm ci --ignore-scripts` | `.github/workflows/` | Secretos filtrados, vulnerabilidades en el código y en dependencias, ataques a la cadena de suministro |
-| Dependabot semanal | `.github/dependabot.yml` | Dependencias y actions desactualizadas |
+| Dependabot semanal con 7 días de espera (activo cuando se integre a `main`: GitHub solo lee la config desde la rama por defecto; hasta entonces los pins se revisan a mano) | `.github/dependabot.yml` | Dependencias y actions desactualizadas |
 
 ## Limitaciones conocidas
 

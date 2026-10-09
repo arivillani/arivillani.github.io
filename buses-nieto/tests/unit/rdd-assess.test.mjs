@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { assessRisk } from '../../scripts/rdd-assess.mjs';
 
 test('docs, specs, receipts and binary assets are passive with no review lens', () => {
-  const result = assessRisk(['buses-nieto/sdd/buses-nieto-mvp.md', 'buses-nieto/site/img/units/a/01.webp', 'buses-nieto/site/fonts/barlow-400.woff2']);
+  const result = assessRisk(['buses-nieto/sdd/buses-nieto-mvp.md', 'buses-nieto/site/img/units/a/01.webp', 'buses-nieto/site/fonts/barlow-400.woff2', 'buses-nieto/site/fonts/OFL.txt']);
   assert.equal(result.tier, 'passive');
   assert.deepEqual(result.lenses, []);
 });
@@ -14,8 +14,17 @@ test('styles, data and tests are medium with one focus lens', () => {
   assert.equal(result.lenses.length, 1);
 });
 
-test('site code, workflows, dependencies and the dev server are high with the 4R lenses', () => {
-  for (const file of ['buses-nieto/site/js/catalog.js', '.github/workflows/buses-nieto.yml', 'buses-nieto/package-lock.json', 'buses-nieto/scripts/serve.mjs']) {
+test('site code, workflows, dependencies, tooling, security gates and SVG markup are high with the 4R lenses', () => {
+  for (const file of [
+    'buses-nieto/site/js/catalog.js',
+    '.github/workflows/buses-nieto.yml',
+    'buses-nieto/package-lock.json',
+    'buses-nieto/scripts/serve.mjs',
+    'buses-nieto/tests/security/static.test.mjs',
+    'buses-nieto/eslint.config.js',
+    'buses-nieto/.htmlvalidate.json',
+    'buses-nieto/site/img/bus-mark.svg',
+  ]) {
     const result = assessRisk([file]);
     assert.equal(result.tier, 'high', file);
     assert.deepEqual(result.lenses, ['Risk', 'Resilience', 'Readability', 'Reliability']);
