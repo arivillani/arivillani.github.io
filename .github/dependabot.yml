@@ -1,0 +1,55 @@
+version: 2
+
+updates:
+  # Dependencias de desarrollo del sitio (eslint, html-validate, Playwright, axe).
+  - package-ecosystem: "npm"
+    directory: "/buses-nieto"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "America/Argentina/Buenos_Aires"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      dev-tooling:
+        patterns:
+          - "eslint"
+          - "@eslint/*"
+          - "globals"
+          - "html-validate"
+      playwright:
+        patterns:
+          - "@playwright/*"
+          - "@axe-core/*"
+    ignore:
+      # La versión de @playwright/test está atada al build de navegadores que se
+      # usa en CI y en desarrollo local: solo se actualizan parches de forma
+      # automática; los cambios minor/major se hacen a mano junto con los navegadores.
+      - dependency-name: "@playwright/test"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+
+  # Actions de GitHub usadas por los workflows de .github/workflows/.
+  # Las actions están fijadas por SHA de commit: Dependabot actualiza el SHA y el
+  # comentario con la versión (# vX.Y.Z) en el mismo PR.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "America/Argentina/Buenos_Aires"
+    labels:
+      - "dependencies"
+      - "ci"
+    commit-message:
+      prefix: "ci(deps)"
+    groups:
+      actions:
+        patterns:
+          - "*"
