@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 64" role="img" aria-label="Buses Nieto">
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 22h30M12 32h24M20 42h16" stroke="#ffffff" stroke-width="4"/>
+    <path d="M48 8h84c9 0 15 5 17 13l5 19v7c0 3-2 5-5 5H48c-3 0-5-2-5-5V13c0-3 2-5 5-5z" stroke="#ffffff" stroke-width="4"/>
+    <path d="M52 16h74v13H52z" stroke="#ffffff" stroke-width="3"/>
+    <path d="M134 16h8l5 18h-13z" stroke="#ffffff" stroke-width="3"/>
+    <path d="M44 41c34-9 70 3 110-6" stroke="#3ccf62" stroke-width="5"/>
+  </g>
+  <circle cx="68" cy="53" r="7" fill="#062a1d" stroke="#ffffff" stroke-width="3"/>
+  <circle cx="128" cy="53" r="7" fill="#062a1d" stroke="#ffffff" stroke-width="3"/>
+</svg>

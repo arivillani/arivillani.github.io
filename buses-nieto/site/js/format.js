@@ -18,5 +18,5 @@ export function toWhatsAppNumber(phone) {
 }
 
 export function unitTitle(unit) {
-  return [unit.brand, unit.body, unit.model].filter(Boolean).join(' ');
+  return [unit.brand, unit.model, unit.body].filter(Boolean).join(' ');
 }

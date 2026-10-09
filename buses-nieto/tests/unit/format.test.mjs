@@ -24,7 +24,7 @@ test('toWhatsAppNumber rejects numbers that are not 10 local digits', () => {
   assert.throws(() => toWhatsAppNumber('12345'), /teléfono/i);
 });
 
-test('unitTitle joins chassis brand, body and optional model', () => {
+test('unitTitle names chassis brand, optional chassis model and then the body', () => {
   assert.equal(unitTitle({ brand: 'Scania', body: 'Metalsur' }), 'Scania Metalsur');
-  assert.equal(unitTitle({ brand: 'Mercedes-Benz', body: 'Saldivia', model: 'LO 915' }), 'Mercedes-Benz Saldivia LO 915');
+  assert.equal(unitTitle({ brand: 'Mercedes-Benz', body: 'Saldivia', model: 'LO 915' }), 'Mercedes-Benz LO 915 Saldivia');
 });
