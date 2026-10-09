@@ -24,6 +24,8 @@ test('site code, workflows, dependencies, tooling, security gates and SVG markup
     'buses-nieto/eslint.config.js',
     'buses-nieto/.htmlvalidate.json',
     'buses-nieto/site/img/bus-mark.svg',
+    'buses-nieto/.github/workflows/dev-pages.yml',
+    'buses-nieto/scripts/sync-dev-repo.sh',
   ]) {
     const result = assessRisk([file]);
     assert.equal(result.tier, 'high', file);

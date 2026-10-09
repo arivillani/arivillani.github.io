@@ -79,10 +79,11 @@ modal de detalle accesible (Esc cierra, foco vuelve al disparador), sin scroll h
 
 ### S9 — Despliegue solo dev
 Pipeline en la rama de feature con gates (calidad + seguridad) y job `deploy-dev` sobre el
-environment `dev`. Ningún job despliega desde `main`; `index.html` de la raíz no cambia.
-URL de dev: repo público `arivillani/buses-nieto-dev` (GitHub Pages, plan gratuito), espejo de
-`buses-nieto/` publicado con `git subtree split`; su pipeline repite los gates y solo entonces
-despliega Pages desde su `main` → `https://arivillani.github.io/buses-nieto-dev/`.
+environment `dev`. Ningún job despliega desde `main` del repo fuente; `index.html` de la raíz
+de arivillani.github.io no cambia. URL de dev: repo público `arivillani/buses-nieto-dev` (GitHub Pages, plan gratuito), espejo de
+`buses-nieto/` publicado con `git subtree split` (solo commits ya pusheados al repo fuente);
+su pipeline repite los mismos gates, dependency review en PRs incluido, y solo entonces
+despliega Pages desde el `main` del espejo → `https://arivillani.github.io/buses-nieto-dev/`.
 
 ### S10 — Datos de ejemplo honestos
 Las unidades que no provienen del cliente se marcan `demo: true` y muestran la etiqueta

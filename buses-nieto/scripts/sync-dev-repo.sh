@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Publica buses-nieto/ en el repo dev (arivillani/buses-nieto-dev) conservando la historia.
-# El repo dev es un espejo: su main siempre avanza en fast-forward desde el repo fuente.
+# El repo dev es un espejo: solo recibe commits que ya están en el repo fuente, y su main
+# avanza siempre en fast-forward (un push rechazado nunca se fuerza).
 set -euo pipefail
 
 remote="${1:-https://github.com/arivillani/buses-nieto-dev.git}"
@@ -11,5 +12,11 @@ if [ -n "$(git status --porcelain -- buses-nieto)" ]; then
   exit 1
 fi
 
-git subtree split --prefix=buses-nieto -b buses-nieto-dev-sync
-git push "$remote" buses-nieto-dev-sync:main
+if ! git rev-parse --abbrev-ref --symbolic-full-name '@{u}' >/dev/null 2>&1 \
+  || ! git merge-base --is-ancestor HEAD '@{u}'; then
+  echo "HEAD no está pusheado al repo fuente: pusheá la rama antes de sincronizar el espejo." >&2
+  exit 1
+fi
+
+split="$(git subtree split --prefix=buses-nieto)"
+git push "$remote" "${split}:refs/heads/main"

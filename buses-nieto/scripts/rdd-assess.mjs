@@ -8,9 +8,9 @@ const TIERS = ['passive', 'medium', 'high'];
 const FOUR_R = ['Risk', 'Resilience', 'Readability', 'Reliability'];
 
 const RULES = [
-  { tier: 'high', why: 'workflow / supply chain', test: (f) => f.startsWith('.github/') || /(^|\/)package(-lock)?\.json$/.test(f) },
+  { tier: 'high', why: 'workflow / supply chain', test: (f) => /(^|\/)\.github\//.test(f) || /(^|\/)package(-lock)?\.json$/.test(f) },
   { tier: 'high', why: 'site code handles data and builds external URLs', test: (f) => /\/site\/js\//.test(f) },
-  { tier: 'high', why: 'tooling that executes locally or in CI', test: (f) => /\/scripts\/.+\.mjs$/.test(f) },
+  { tier: 'high', why: 'tooling that executes locally or in CI', test: (f) => /\/scripts\/.+\.(mjs|sh)$/.test(f) },
   { tier: 'high', why: 'security gate or lint rules', test: (f) => /\/tests\/security\//.test(f) || /(^|\/)(eslint\.config\.js|\.htmlvalidate\.json)$/.test(f) },
   { tier: 'high', why: 'SVG is active markup when opened directly', test: (f) => f.endsWith('.svg') },
   { tier: 'passive', why: 'documentation, specs or receipts', test: (f) => /\.md$/.test(f) || /\/(sdd|rdd)\//.test(f) },
