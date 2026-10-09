@@ -41,13 +41,14 @@ WhatsApp: "3549 442500" y "11 2511 3132".
 
 ### S4 — Catálogo con filtros
 Filtrar por tipo, marca, año mínimo, precio máximo (USD) y texto libre; ordenar por
-"Más recientes", "Menor precio", "Mayor precio". Contador "N unidades". Estado vacío:
+"Destacadas" (por defecto), "Más recientes", "Menor precio", "Mayor precio"; las unidades sin
+precio publicado ("Consultar") van al final. Contador "N unidades". Estado vacío:
 "No encontramos unidades con esos filtros". El buscador del hero aplica sus filtros al catálogo.
 - **Aceptación:** tests unitarios de `filterUnits`/`sortUnits`; e2e que filtra y ve el conteo.
 
 ### S5 — Consulta por WhatsApp
 Cada unidad tiene "Consultar por WhatsApp" → `https://wa.me/5493549442500?text=…` con el
-mensaje "Hola Buses Nieto, me interesa la unidad <título> (<id>)." Links externos con
+mensaje "Hola Buses Nieto, me interesa la unidad <título> <año> (<id>)." Links externos con
 `target="_blank"` y `rel="noopener noreferrer"`.
 
 ### S6 — Vendé tu unidad
