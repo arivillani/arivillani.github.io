@@ -95,16 +95,16 @@ Reliability).
 
 | ID | Specs | Ruta | Estado | Commit | Riesgo RDD |
 | --- | --- | --- | --- | --- | --- |
-| T1 | S7, S11 | inline | done | 0ce6a49 | high (4R) |
-| T2 | S3 | delegada (sonnet): recorte de fotos del flyer | done | 6a30252 | passive |
-| T3 | S2, S7 | delegada (sonnet): fuentes self-hosted | done | 4ea2103 | medium |
-| T4 | S4, S5, S6, S7, S10 | inline, test-first | done | fdb4732 | high (4R) |
-| T5 | S1, S2, S3, S8 | inline | done | 2413a8e | high (4R) |
-| T6 | S1, S7 | delegada (sonnet): términos, SECURITY.md, dependabot | done | b63a418 | high (4R) |
-| T7 | S7 | inline, test-first (RED por mutación) | done | cbdc263 | medium |
-| T8 | S1, S4, S5, S6, S8 | inline | done | 7e98583 | medium |
-| T9 | S7, S9 | inline | done | dba7d00 | high (4R) |
-| T10 | S11 | revisor independiente (4R) sobre `4d125e4..dba7d00` | in-progress | — | — |
+| T1 | S7, S11 | inline | done | e189b44 | high (4R) |
+| T2 | S3 | delegada (sonnet): recorte de fotos del flyer | done | d47ab01 | passive |
+| T3 | S2, S7 | delegada (sonnet): fuentes self-hosted | done | 3e8035f | medium |
+| T4 | S4, S5, S6, S7, S10 | inline, test-first | done | 2f96b55 | high (4R) |
+| T5 | S1, S2, S3, S8 | inline | done | 5e4c153 | high (4R) |
+| T6 | S1, S7 | delegada (sonnet): términos, SECURITY.md, dependabot | done | f2e3176 | high (4R) |
+| T7 | S7 | inline, test-first (RED por mutación) | done | 9b9d9c9 | medium |
+| T8 | S1, S4, S5, S6, S8 | inline | done | bccc3d1 | medium |
+| T9 | S7, S9 | inline | done | d016b64 | high (4R) |
+| T10 | S11 | revisor independiente (4R) sobre `4d125e4..d016b64` | in-progress | — | — |
 
 - T1 Scaffold: `package.json`, servidor estático sin dependencias, `rdd-assess`, lint.
 - T2 Fotos: recortes WebP del flyer en `site/img/units/scania-metalsur-2014/`.
@@ -140,4 +140,11 @@ Reliability).
   documentar (corregido); persona auditor sin hallazgos. `npm audit`: 0 vulnerabilidades.
 - **L6** Bloqueo: el push a GitHub devolvió 403 (Claude no tiene acceso de escritura al
   repositorio). Se le pidió al usuario reconectar GitHub / instalar la GitHub App.
+- **L7** RDD: la revisión 4R pidió cambios (2 major, 8 minor). Se aplicó una sola corrección
+  acotada (`bed5319`) con tests en RED por hallazgo; el revisor la validó como `approved`
+  (10/10 resueltos, sin regresiones severas). Recibo: `rdd/receipts/2026-10-09-buses-nieto-mvp.md`.
+  Durante la corrección, el gate de cobertura cayó a 87 % al cargar `dom.js`; se detectó por
+  el código de salida y se resolvió con tests unitarios de `dom.js` antes de cerrar el commit.
+- **L8** Los commits se reescribieron (solo autor/committer → `Claude <noreply@anthropic.com>`)
+  antes de cualquier push; los árboles son idénticos. Los SHA de este documento son los nuevos.
 
