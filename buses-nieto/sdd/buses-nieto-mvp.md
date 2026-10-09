@@ -92,18 +92,18 @@ Reliability).
 
 ## Tasks
 
-| ID | Specs | Ruta | Estado | Commit |
-| --- | --- | --- | --- | --- |
-| T1 | S7, S11 | inline | pending | — |
-| T2 | S3 | delegada (sonnet): recorte de fotos del flyer | pending | — |
-| T3 | S2, S7 | delegada (sonnet): fuentes self-hosted | pending | — |
-| T4 | S4, S5, S6, S7, S10 | inline, test-first | pending | — |
-| T5 | S1, S2, S3, S8 | inline | pending | — |
-| T6 | S1, S7 | delegada (sonnet): términos, SECURITY.md, dependabot | pending | — |
-| T7 | S7 | inline, test-first | pending | — |
-| T8 | S1, S4, S5, S6, S8 | inline | pending | — |
-| T9 | S7, S9 | inline | pending | — |
-| T10 | S11 | revisor independiente (4R) | pending | — |
+| ID | Specs | Ruta | Estado | Commit | Riesgo RDD |
+| --- | --- | --- | --- | --- | --- |
+| T1 | S7, S11 | inline | done | 0ce6a49 | high (4R) |
+| T2 | S3 | delegada (sonnet): recorte de fotos del flyer | done | 6a30252 | passive |
+| T3 | S2, S7 | delegada (sonnet): fuentes self-hosted | done | 4ea2103 | medium |
+| T4 | S4, S5, S6, S7, S10 | inline, test-first | done | fdb4732 | high (4R) |
+| T5 | S1, S2, S3, S8 | inline | done | 2413a8e | high (4R) |
+| T6 | S1, S7 | delegada (sonnet): términos, SECURITY.md, dependabot | done | b63a418 | high (4R) |
+| T7 | S7 | inline, test-first (RED por mutación) | done | cbdc263 | medium |
+| T8 | S1, S4, S5, S6, S8 | inline | done | 7e98583 | medium |
+| T9 | S7, S9 | inline | done | dba7d00 | high (4R) |
+| T10 | S11 | revisor independiente (4R) sobre `4d125e4..dba7d00` | in-progress | — | — |
 
 - T1 Scaffold: `package.json`, servidor estático sin dependencias, `rdd-assess`, lint.
 - T2 Fotos: recortes WebP del flyer en `site/img/units/scania-metalsur-2014/`.
@@ -130,3 +130,13 @@ Reliability).
   feature (Specs/Tasks/Log), test-first y RDD por niveles de riesgo con 4R.
 - **L3** Decisión: sitio estático sin dependencias de runtime (HTML + CSS + ES modules) dentro
   de `buses-nieto/` para no tocar la raíz de producción; dependencias solo de desarrollo.
+- **L4** RED/GREEN observados: T1 (módulos inexistentes → 11/11), T4 (4 suites en RED →
+  35/35), orden del título de unidad (1 RED → GREEN), T7 (24/24 en el sitio real; 6/6
+  violaciones inyectadas detectadas en una copia mutada), T8 (axe detectó contraste
+  insuficiente del verde sobre fondo claro → se oscureció el acento → 25/25).
+- **L5** DevSecOps local: gitleaks 8.30.1 sin hallazgos en 8 commits; actionlint 1.7.12 OK;
+  zizmor 1.30.1 marcó falta de cooldown en Dependabot (corregido: 7 días) y permisos sin
+  documentar (corregido); persona auditor sin hallazgos. `npm audit`: 0 vulnerabilidades.
+- **L6** Bloqueo: el push a GitHub devolvió 403 (Claude no tiene acceso de escritura al
+  repositorio). Se le pidió al usuario reconectar GitHub / instalar la GitHub App.
+
