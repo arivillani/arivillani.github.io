@@ -80,6 +80,9 @@ modal de detalle accesible (Esc cierra, foco vuelve al disparador), sin scroll h
 ### S9 — Despliegue solo dev
 Pipeline en la rama de feature con gates (calidad + seguridad) y job `deploy-dev` sobre el
 environment `dev`. Ningún job despliega desde `main`; `index.html` de la raíz no cambia.
+URL de dev: repo público `arivillani/buses-nieto-dev` (GitHub Pages, plan gratuito), espejo de
+`buses-nieto/` publicado con `git subtree split`; su pipeline repite los gates y solo entonces
+despliega Pages desde su `main` → `https://arivillani.github.io/buses-nieto-dev/`.
 
 ### S10 — Datos de ejemplo honestos
 Las unidades que no provienen del cliente se marcan `demo: true` y muestran la etiqueta
@@ -104,7 +107,8 @@ Reliability).
 | T7 | S7 | inline, test-first (RED por mutación) | done | 9b9d9c9 | medium |
 | T8 | S1, S4, S5, S6, S8 | inline | done | bccc3d1 | medium |
 | T9 | S7, S9 | inline | done | d016b64 | high (4R) |
-| T10 | S11 | revisor independiente (4R) sobre `4d125e4..d016b64` | in-progress | — | — |
+| T10 | S11 | revisor independiente (4R) sobre `4d125e4..d016b64` | done (approved) | bed5319 | high (4R) |
+| T11 | S9 | inline: repo dev + Pages (free tier) | in-progress | — | high (4R) |
 
 - T1 Scaffold: `package.json`, servidor estático sin dependencias, `rdd-assess`, lint.
 - T2 Fotos: recortes WebP del flyer en `site/img/units/scania-metalsur-2014/`.
@@ -116,6 +120,7 @@ Reliability).
 - T8 E2E + a11y (desktop y mobile).
 - T9 Workflow DevSecOps + `deploy-dev`.
 - T10 Revisión 4R independiente del candidato completo.
+- T11 Repo `buses-nieto-dev` con GitHub Pages: workflow `dev-pages`, script de sincronización.
 
 ## Log
 
@@ -147,4 +152,8 @@ Reliability).
   el código de salida y se resolvió con tests unitarios de `dom.js` antes de cerrar el commit.
 - **L8** Los commits se reescribieron (solo autor/committer → `Claude <noreply@anthropic.com>`)
   antes de cualquier push; los árboles son idénticos. Los SHA de este documento son los nuevos.
+- **L9** (pedido del usuario, literal): "Sí, armá el repo buses-nieto-dev con GitHub Pages
+  siempre y cuando sea free tier". Pages gratis requiere repo público (en el plan Free no
+  hay Pages para repos privados); Actions es gratis en repos públicos. La integración de
+  GitHub no puede crear repos (403), así que el usuario crea el repo vacío y activa Pages.
 

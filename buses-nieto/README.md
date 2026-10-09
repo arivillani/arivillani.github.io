@@ -57,6 +57,19 @@ Inspirado en el flujo de [gentle-ai](https://github.com/Gentleman-Programming/ge
 Las tareas mecánicas (recorte de fotos del flyer, fuentes self-hosted, términos, Dependabot,
 SECURITY.md) se delegaron a agentes de menor costo; el resto se hizo y verificó en línea.
 
+## Entorno dev en GitHub Pages
+
+`https://arivillani.github.io/buses-nieto-dev/` se publica desde el repo público
+`arivillani/buses-nieto-dev` (plan gratuito). Ese repo es un **espejo** de `buses-nieto/`:
+
+```bash
+buses-nieto/scripts/sync-dev-repo.sh   # git subtree split + push a main del repo dev
+```
+
+Ahí, `.github/workflows/dev-pages.yml` (este proyecto lo guarda en `buses-nieto/.github/`,
+donde el repo fuente no lo ejecuta) corre los mismos gates y recién entonces despliega Pages.
+Los cambios se hacen siempre en el repo fuente, nunca en el espejo.
+
 ## DevSecOps
 
 Pipeline en `.github/workflows/buses-nieto.yml`: secretos (gitleaks, binario verificado por

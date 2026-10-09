@@ -45,3 +45,8 @@ corregir el problema antes de divulgarlo.
 
 El pipeline despliega **solo al entorno `dev`**, desde ramas de feature, después de pasar
 los controles de calidad y de seguridad. Producción no se despliega desde este pipeline.
+
+La URL de dev (`https://arivillani.github.io/buses-nieto-dev/`) sale del repo público
+`arivillani/buses-nieto-dev`, espejo de `buses-nieto/` sincronizado con
+`scripts/sync-dev-repo.sh`. Su workflow `dev-pages` repite todos los gates y publica en Pages
+solo desde `main`, con `pages: write` e `id-token: write` limitados al job de deploy.
