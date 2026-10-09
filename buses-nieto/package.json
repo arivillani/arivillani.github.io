@@ -12,6 +12,7 @@
     "dev": "node scripts/serve.mjs",
     "lint": "eslint . && html-validate \"site/**/*.html\"",
     "test": "node --test \"tests/unit/*.test.mjs\" \"tests/security/*.test.mjs\"",
+    "test:security": "node --test \"tests/security/*.test.mjs\"",
     "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=\"site/js/**\" --test-coverage-include=\"scripts/**\" --test-coverage-lines=90 \"tests/unit/*.test.mjs\"",
     "test:e2e": "playwright test",
     "audit": "npm audit --audit-level=high",

@@ -1,0 +1,200 @@
+# Buses Nieto — pipeline DevSecOps, solo entorno dev.
+# Gates de calidad y seguridad en cada push a ramas de feature y en PRs; si todo pasa,
+# deploy-dev publica el paquete del sitio en el environment "dev".
+# Ningún job despliega desde main: producción (raíz de arivillani.github.io) no se toca.
+# Las actions están fijadas por SHA de commit; Dependabot las mantiene al día.
+name: buses-nieto
+
+on:
+  push:
+    branches-ignore: [main]
+    paths:
+      - "buses-nieto/**"
+      - ".github/workflows/buses-nieto.yml"
+  pull_request:
+    paths:
+      - "buses-nieto/**"
+      - ".github/workflows/buses-nieto.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: buses-nieto-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+    working-directory: buses-nieto
+
+env:
+  NODE_VERSION: "22"
+  GITLEAKS_VERSION: "8.30.1"
+  GITLEAKS_SHA256: "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
+
+jobs:
+  secrets:
+    name: Secretos (gitleaks)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Instalar gitleaks verificado por checksum
+        working-directory: ${{ runner.temp }}
+        run: |
+          curl -sSfL -o gitleaks.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  gitleaks.tar.gz" | sha256sum --check --strict
+          tar -xzf gitleaks.tar.gz gitleaks
+      - name: Escanear todo el historial
+        working-directory: .
+        run: '"$RUNNER_TEMP/gitleaks" git --redact --verbose --exit-code 1 .'
+
+  quality:
+    name: Lint + tests unitarios + tests de seguridad
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: buses-nieto/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm run lint
+      - name: Tests unitarios con cobertura mínima de 90 %
+        run: npm run test:coverage
+      - name: Gate de seguridad estático
+        run: npm run test:security
+
+  supply-chain:
+    name: Dependencias (audit + firmas)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: buses-nieto/package-lock.json
+      - run: npm ci --ignore-scripts
+      - name: Vulnerabilidades conocidas (high o más)
+        run: npm audit --audit-level=high
+      - name: Firmas y procedencia del registry
+        run: npm audit signatures
+
+  dependency-review:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high
+
+  codeql:
+    name: SAST (CodeQL)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read # leer el código a analizar
+      actions: read # CodeQL consulta el estado del workflow
+      security-events: write # subir los resultados SARIF a Code scanning
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: github/codeql-action/init@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
+        with:
+          languages: javascript-typescript
+          build-mode: none
+          queries: security-extended
+          config: |
+            paths:
+              - buses-nieto
+            paths-ignore:
+              - buses-nieto/node_modules
+      - uses: github/codeql-action/analyze@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
+        with:
+          category: /language:javascript-typescript
+
+  e2e:
+    name: E2E + accesibilidad (Playwright + axe)
+    needs: quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: buses-nieto/package-lock.json
+      - run: npm ci --ignore-scripts
+      - name: Navegador de la versión fijada de Playwright
+        run: npx playwright install --with-deps chromium
+      - run: npx playwright test
+      - name: Reporte de Playwright
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: buses-nieto/playwright-report
+          retention-days: 7
+
+  deploy-dev:
+    name: Deploy dev
+    needs: [secrets, quality, supply-chain, codeql, e2e]
+    if: github.event_name != 'pull_request' && github.ref != 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: dev
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Empaquetar el sitio con metadatos de build y checksums
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          rm -rf dist && cp -R site dist
+          node -e 'console.log(JSON.stringify({ commit: process.env.GITHUB_SHA, ref: process.env.REF_NAME, builtAt: new Date().toISOString(), environment: "dev" }, null, 2))' > dist/build-info.json
+          (cd dist && find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS)
+      - name: Publicar paquete dev
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: buses-nieto-dev-${{ github.sha }}
+          path: buses-nieto/dist
+          if-no-files-found: error
+          retention-days: 14
+      - name: Resumen del deploy
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          {
+            echo "## Buses Nieto — deploy dev"
+            echo ""
+            echo "- Commit: \`${GITHUB_SHA}\`"
+            echo "- Rama: \`${REF_NAME}\`"
+            echo "- Paquete: artefacto \`buses-nieto-dev-${GITHUB_SHA}\` (14 días, con \`SHA256SUMS\` y \`build-info.json\`)"
+            echo "- Ver localmente: descomprimir y servir la carpeta, o \`npm run dev\` en \`buses-nieto/\`"
+            echo "- Producción: no se despliega desde este pipeline"
+          } >> "$GITHUB_STEP_SUMMARY"

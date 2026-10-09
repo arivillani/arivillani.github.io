@@ -10,6 +10,10 @@ updates:
       time: "06:00"
       timezone: "America/Argentina/Buenos_Aires"
     open-pull-requests-limit: 5
+    # Esperar 7 días antes de adoptar una release nueva: es la ventana en la que suelen
+    # detectarse los paquetes comprometidos. Las actualizaciones de seguridad no esperan.
+    cooldown:
+      default-days: 7
     labels:
       - "dependencies"
     commit-message:
@@ -44,6 +48,8 @@ updates:
       day: "monday"
       time: "06:00"
       timezone: "America/Argentina/Buenos_Aires"
+    cooldown:
+      default-days: 7
     labels:
       - "dependencies"
       - "ci"
